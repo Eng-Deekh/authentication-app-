@@ -1,12 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../widgets/custom_button.dart';
 import 'login_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
+  Future<void> signOut(BuildContext context) async {
+
+    await FirebaseAuth.instance.signOut();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(),
+      ),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -14,6 +32,7 @@ class DashboardPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               const SizedBox(height: 30),
 
               const Text(
@@ -29,6 +48,7 @@ class DashboardPage extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
+
                     Image.asset(
                       "assets/icon1.png",
                       width: 100,
@@ -36,9 +56,9 @@ class DashboardPage extends StatelessWidget {
 
                     const SizedBox(height: 30),
 
-                    const Text(
-                      "Welcome sign in email",
-                      style: TextStyle(
+                    Text(
+                      user?.email ?? "No Email",
+                      style: const TextStyle(
                         fontSize: 18,
                       ),
                     ),
@@ -52,15 +72,7 @@ class DashboardPage extends StatelessWidget {
                 text: "Sign Out",
                 backgroundColor: const Color(0xff2635B4),
                 textColor: Colors.white,
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const LoginPage(),
-                    ),
-                    (route) => false,
-                  );
-                },
+                onPressed: () => signOut(context),
               ),
 
               const SizedBox(height: 30),
